@@ -8,7 +8,7 @@ class Database
 {
     protected $dbcon;
 
-    public $dbname = "db_mailerlite_subcribers";
+    public $dbname = "db_subcribers";
     public $dbuser = "root";
     public $dbpass = "";
     public $dbhost = "localhost";

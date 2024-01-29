@@ -62,7 +62,7 @@ class SubscriberEntry
     public function insertSubscriber(array $data): string
     {
         $sql = "
-            INSERT INTO ml_subscribers
+            INSERT INTO tbl_subscribers
                 (first_name, last_name, email, subscriber_status)
             VALUES
                 (:first_name, :last_name, :email, :subscriber_status)
@@ -86,7 +86,7 @@ class SubscriberEntry
     
     public function updateSubscriber(array $current, array $new): int
     {
-        $sql = "UPDATE ml_subscribers "
+        $sql = "UPDATE tbl_subscribers "
                 . "SET first_name = :first_name, last_name = :last_name, email = :email, subscriber_status = :subscriber_status "
                 . "WHERE subscriber_id = :subscriber_id";
         
@@ -106,7 +106,7 @@ class SubscriberEntry
     
     public function deleteSubscriber(string $id): int
     {
-        $sql = "DELETE FROM ml_subscribers "
+        $sql = "DELETE FROM tbl_subscribers "
                 . "WHERE subscriber_id = :subscriber_id";
         
         $stmt = $this->link->prepare($sql);
@@ -121,7 +121,7 @@ class SubscriberEntry
     // Function to get subscriber ID by email
     public function getSubscriberIdByEmail(string $email): string
     {
-        $sql = "SELECT subscriber_id FROM ml_subscribers WHERE email = :email LIMIT 1";
+        $sql = "SELECT subscriber_id FROM tbl_subscribers WHERE email = :email LIMIT 1";
         try {
             $stmt = $this->link->prepare($sql);
             
