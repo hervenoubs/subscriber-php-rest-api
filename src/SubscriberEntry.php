@@ -18,7 +18,7 @@ class SubscriberEntry
     
     public function getAllSubscribers(): array
     {
-        $sql = "SELECT * FROM ml_subscribers";
+        $sql = "SELECT * FROM tbl_subscribers";
         
         $stmt = $this->link->query($sql);
         
@@ -37,7 +37,7 @@ class SubscriberEntry
     
     public function getSubscriber(string $id): array | false
     {
-        $sql = "SELECT * FROM ml_subscribers
+        $sql = "SELECT * FROM tbl_subscribers
                 WHERE subscriber_id = :subscriber_id";
         try {
             $stmt = $this->link->prepare($sql);
