@@ -42,7 +42,7 @@ class SubscriberController
             case "PATCH":
                 $data = (array) json_decode(file_get_contents("php://input"), true);
 
-                $errors = $this->getValidationErrors($data, false);
+                $errors = $this->getValidationErrors($data);
                 
                 if (! empty($errors)) {
                     http_response_code(422);
@@ -132,35 +132,47 @@ class SubscriberController
         }
     }
     
-    private function getValidationErrors(array $data, bool $is_new): array
+    private function getValidationErrors(array $data): array
     {
         $errors = [];
         
-        if ($is_new && empty($data['first_name'])) {
+        // Sanitize and validate first_name
+        if (empty($data['first_name'])) {
             $errors[] = "First name is required";
+        } else {
+            $sanitizedFirstName = htmlspecialchars($data['first_name'], ENT_QUOTES, 'UTF-8');
+            if ($data['first_name'] !== $sanitizedFirstName) {
+                $errors[] = "Invalid characters in first name";
+            }
         }
         
+        // Sanitize and validate last_name
         if (empty($data['last_name'])) {
             $errors[] = "Last name is required";
-        }
-        
-        if (array_key_exists("email", $data)) {
-            
-            if (filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
-                $errors[] = "Email not correct";
+        } else {
+            $sanitizedLastName = htmlspecialchars($data['last_name'], ENT_QUOTES, 'UTF-8');
+            if ($data['last_name'] !== $sanitizedLastName) {
+                $errors[] = "Invalid characters in last name";
             }
-            
         }
         
+        // Validate and sanitize email
+        if (array_key_exists("email", $data)) {
+            $sanitizedEmail = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+            if (!filter_var($sanitizedEmail, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Invalid email format";
+            }
+        }
+        
+        // Validate and sanitize subscriber_status
         if (array_key_exists("subscriber_status", $data)) {
-            
-            if (filter_var($data['subscriber_status'], FILTER_VALIDATE_INT) === false) {
+            $sanitizedSubscriberStatus = filter_var($data['subscriber_status'], FILTER_VALIDATE_INT);
+            if ($sanitizedSubscriberStatus === false) {
                 $errors[] = "Subscriber status must be an integer";
             }
-            
         }
         
         return $errors;
     }
-    
+
 }
